@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "start:dev": "nodemon src/index.ts",
+    "start:dev": "nodemon --exec ts-node-dev --env-file=.env src/index.ts",
     "start:prod": "npx tsc && node --env-file=.env dist/index.js",
     "test": "jest"
   },
