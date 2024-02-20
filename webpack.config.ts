@@ -5,7 +5,7 @@ import { merge } from 'webpack-merge'
 
 const prodConfig = require('./webpack.prod');
 
-module.exports = function (env: any) {
+module.exports = function (env: Record<string, string | undefined>) {
   const isEnvProduction = env.environment === 'prod';
 
   const commonConfig = {
