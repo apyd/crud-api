@@ -1,10 +1,11 @@
 import request from 'supertest';
 import { server } from '../index';
 import { ROUTES } from '../constants';
+import { type UserData } from '../models/users.model';
 
 describe('Users API', () => {
   let userId: string;
-  let userData: any;
+  let userData: UserData;
 
   afterAll(() => {
     server.close();

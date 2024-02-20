@@ -1,5 +1,5 @@
 import http from 'node:http';
-import { ValidatedUserData } from '../models/users.model';
+import { type UserData, type ValidatedUserData } from '../models/users.model';
 
 export const isUUIDv4 = (id: unknown): boolean => {
   if(typeof id !== 'string' || (typeof id === 'string' && id?.length !== 36)) {
@@ -10,12 +10,12 @@ export const isUUIDv4 = (id: unknown): boolean => {
   return uuidv4Regex.test(id);
 }
 
-export const validateUser = (userData: unknown): boolean => {
+export const validateUser = (userData: UserData): boolean => {
   if(typeof userData !== 'object' || !userData) {
     return false;
   }
 
-  const { username, age, hobbies } = userData as { username?: unknown, age?: unknown, hobbies?: unknown };
+  const { username, age, hobbies } = userData
   
   if( !username || typeof username !== 'string' || typeof age !== 'number' || age < 0 || !Array.isArray(hobbies)) {
     return false
@@ -38,7 +38,7 @@ export const getErrorMessage = (error: unknown) => {
   return String(error)
 }
 
-export const getValidatedUserData = (userData: unknown): ValidatedUserData => {
+export const getValidatedUserData = (userData: unknown): ValidatedUserData | null => {
   if(typeof userData !== 'object' || !userData) {
     return null
   }

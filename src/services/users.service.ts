@@ -13,7 +13,7 @@ export const addUser = (user: User) : User => {
   return user
 }
 
-export const updateUserById = (id: string, user: ValidatedUserData) : User | undefined => {
+export const updateUserById = (id: string, user: ValidatedUserData) : User | null => {
   const index = users.findIndex(user => user.id === id)
   if (index !== -1) {
     const userToUpdate = users[index]
@@ -26,16 +26,16 @@ export const updateUserById = (id: string, user: ValidatedUserData) : User | und
     users[index] = updatedUser
     return updatedUser
     }
-    return
+    return null
 }
 
-export const deleteUserById = (id: string) : User | undefined => {
+export const deleteUserById = (id: string) : User | null => {
   const index = users.findIndex(user => user.id === id)
   if (index !== -1) {
     const user = users[index]
     users.splice(index, 1)
     return user
   }
-  return
+  return null
 }
 
