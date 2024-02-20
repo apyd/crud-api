@@ -5,4 +5,10 @@ export type User = {
   hobbies: string[];
 }
 
+export type ValidatedUserData = {
+  username?: string;
+  age?: number;
+  hobbies?: string[];
+} | null;
+
 export const users: User[] = []

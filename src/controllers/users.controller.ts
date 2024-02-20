@@ -1,7 +1,7 @@
 import http from 'node:http'
 import { v4 } from 'uuid'
 import { getAllUsers, getUserById, addUser, updateUserById, deleteUserById } from '../services/users.service'
-import { isUUIDv4, validateUser } from '../utils'
+import { getErrorMessage, getRequestBody, isUUIDv4, validateUser, getValidatedUserData } from '../utils'
 import { ERROR_MESSAGE } from '../constants'
 
 export const getUsers = (req: http.IncomingMessage, res: http.ServerResponse) => {
@@ -29,15 +29,12 @@ export const getUser = (req: http.IncomingMessage, res: http.ServerResponse) => 
   res.end(JSON.stringify({ message: ERROR_MESSAGE.USER_NOT_FOUND }))
 }
 
-export const createUser = (req: http.IncomingMessage, res: http.ServerResponse) => {
-  let data = ''
-  req.on('data', (chunk) => {
-    data += chunk
-  })
-  req.on('end', () => {
+export const createUser = async(req: http.IncomingMessage, res: http.ServerResponse) => {
+  try {
+    const data = await getRequestBody(req)
     const parsedUserData = JSON.parse(data)
     const isUserDataValid = validateUser(parsedUserData)
-    if (!isUserDataValid) {
+    if(!isUserDataValid) {
       res.writeHead(400, { 'Content-Type': 'application/json' })
       res.end(JSON.stringify({ message: ERROR_MESSAGE.INVALID_USER_DATA }))
       return
@@ -49,38 +46,41 @@ export const createUser = (req: http.IncomingMessage, res: http.ServerResponse) 
     addUser(newUser)
     res.writeHead(201, { 'Content-Type': 'application/json' })
     res.end(JSON.stringify(newUser))
-  })
+  } catch (error) {
+    res.writeHead(500, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ message: getErrorMessage(error) }));
+  }
 }
 
-export const updateUser = (req: http.IncomingMessage, res: http.ServerResponse) => {
-  const userId = req.url?.split('/')[3] || ''
-  const isIdValid = isUUIDv4(userId)
-  if (!isIdValid) {
-    res.writeHead(400, { 'Content-Type': 'application/json' })
-    res.end(JSON.stringify({ message: ERROR_MESSAGE.INVALID_USER_ID }))
-    return
-  }
-  let data = ''
-  req.on('data', (chunk) => {
-    data += chunk
-  })
-  req.on('end', () => {
-    const parsedUserData = JSON.parse(data)
-    const isUserDataValid = validateUser(parsedUserData)
-    if (!isUserDataValid) {
+export const updateUser = async(req: http.IncomingMessage, res: http.ServerResponse) => {
+    const userId = req.url?.split('/')[3] || ''
+    const isIdValid = isUUIDv4(userId)
+    if (!isIdValid) {
       res.writeHead(400, { 'Content-Type': 'application/json' })
-      res.end(JSON.stringify({ message: ERROR_MESSAGE.INVALID_USER_DATA }))
+      res.end(JSON.stringify({ message: ERROR_MESSAGE.INVALID_USER_ID }))
       return
     }
-    const user = updateUserById(userId, parsedUserData)
-    if (user) {
-      res.writeHead(200, { 'Content-Type': 'application/json' })
-      res.end(JSON.stringify(user))
-      return
+    try {
+      const data = await getRequestBody(req)
+      const parsedUserData = JSON.parse(data)
+      const validatedData = getValidatedUserData(parsedUserData)
+      if (!validatedData) {
+        res.writeHead(400, { 'Content-Type': 'application/json' })
+        res.end(JSON.stringify({ message: ERROR_MESSAGE.INVALID_USER_DATA }))
+        return
+      }
+      const user = updateUserById(userId, validatedData)
+      if (user) {
+        res.writeHead(200, { 'Content-Type': 'application/json' })
+        res.end(JSON.stringify(user))
+        return
+      }
+      res.writeHead(404, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify({ message: ERROR_MESSAGE.USER_NOT_FOUND }))
+    } catch (error) {
+      res.writeHead(500, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify({ message: getErrorMessage(error) }))
     }
-    res.writeHead(404, { 'Content-Type': 'application/json' })
-    res.end(JSON.stringify({ message: ERROR_MESSAGE.USER_NOT_FOUND }))
-  })
 }
 
 export const deleteUser = (req: http.IncomingMessage, res: http.ServerResponse) => {

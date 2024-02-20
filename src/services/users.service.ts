@@ -1,4 +1,4 @@
-import { type User, users } from '../models/users.model'
+import { type User, users, ValidatedUserData } from '../models/users.model'
 
 export const getAllUsers = () : User[] => {
   return users
@@ -13,13 +13,20 @@ export const addUser = (user: User) : User => {
   return user
 }
 
-export const updateUserById = (id: string, user: User) : User | undefined => {
+export const updateUserById = (id: string, user: ValidatedUserData) : User | undefined => {
   const index = users.findIndex(user => user.id === id)
   if (index !== -1) {
-    users[index] = user
-    return user
-  }
-  return
+    const userToUpdate = users[index]
+    const updatedUser = {
+      id: userToUpdate.id,
+      username: user?.username || userToUpdate?.username,
+      age: user?.age || userToUpdate?.age,
+      hobbies: user?.hobbies || userToUpdate?.hobbies,
+    }
+    users[index] = updatedUser
+    return updatedUser
+    }
+    return
 }
 
 export const deleteUserById = (id: string) : User | undefined => {
