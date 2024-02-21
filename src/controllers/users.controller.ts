@@ -94,7 +94,7 @@ export const deleteUser = (req: http.IncomingMessage, res: http.ServerResponse) 
   const user = deleteUserById(userId)
   if (user) {
     res.writeHead(204, { 'Content-Type': 'application/json' })
-    res.end(JSON.stringify(user))
+    res.end()
     return
   }
   res.writeHead(404, { 'Content-Type': 'application/json' })

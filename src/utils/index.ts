@@ -58,5 +58,5 @@ export const getValidatedUserData = (userData: unknown): ValidatedUserData | nul
     filteredValidData.hobbies = hobbies;
   }
 
-  return filteredValidData;
+  return Object.keys(filteredValidData).length === 0 ? null : filteredValidData;
 }

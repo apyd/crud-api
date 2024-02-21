@@ -32,9 +32,8 @@ export const updateUserById = (id: string, user: ValidatedUserData) : User | nul
 export const deleteUserById = (id: string) : User | null => {
   const index = users.findIndex(user => user.id === id)
   if (index !== -1) {
-    const user = users[index]
-    users.splice(index, 1)
-    return user
+    const deletedUser = users.splice(index, 1)
+    return deletedUser?.[0] || null
   }
   return null
 }
