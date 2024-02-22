@@ -1,15 +1,6 @@
 import http from 'node:http';
 import { type UserData, type ValidatedUserData } from '../models/users.model';
 
-export const isUUIDv4 = (id: unknown): boolean => {
-  if(typeof id !== 'string' || (typeof id === 'string' && id?.length !== 36)) {
-    return false;
-  }
-
-  const uuidv4Regex = new RegExp('^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$');
-  return uuidv4Regex.test(id);
-}
-
 export const validateUser = (userData: UserData): boolean => {
   if(typeof userData !== 'object' || !userData) {
     return false;

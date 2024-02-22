@@ -1,7 +1,7 @@
 import http from 'node:http'
-import { v4 } from 'uuid'
+import { v4, validate as validateUUID } from 'uuid'
 import { getAllUsers, getUserById, addUser, updateUserById, deleteUserById } from '../services/users.service'
-import { getErrorMessage, getRequestBody, isUUIDv4, validateUser, getValidatedUserData } from '../utils'
+import { getErrorMessage, getRequestBody, validateUser, getValidatedUserData } from '../utils'
 import { ERROR_MESSAGE } from '../constants'
 
 export const getUsers = (req: http.IncomingMessage, res: http.ServerResponse) => {
@@ -13,7 +13,7 @@ export const getUsers = (req: http.IncomingMessage, res: http.ServerResponse) =>
 
 export const getUser = (req: http.IncomingMessage, res: http.ServerResponse) => {
   const userId = req.url?.split('/')[3] || ''
-  const isIdValid = isUUIDv4(userId)
+  const isIdValid = validateUUID(userId)
   if (!isIdValid) {
     res.writeHead(400, { 'Content-Type': 'application/json' })
     res.end(JSON.stringify({ message: ERROR_MESSAGE.INVALID_USER_ID }))
@@ -54,7 +54,7 @@ export const createUser = async(req: http.IncomingMessage, res: http.ServerRespo
 
 export const updateUser = async(req: http.IncomingMessage, res: http.ServerResponse) => {
     const userId = req.url?.split('/')[3] || ''
-    const isIdValid = isUUIDv4(userId)
+    const isIdValid = validateUUID(userId)
     if (!isIdValid) {
       res.writeHead(400, { 'Content-Type': 'application/json' })
       res.end(JSON.stringify({ message: ERROR_MESSAGE.INVALID_USER_ID }))
@@ -85,7 +85,7 @@ export const updateUser = async(req: http.IncomingMessage, res: http.ServerRespo
 
 export const deleteUser = (req: http.IncomingMessage, res: http.ServerResponse) => {
   const userId = req.url?.split('/')[3] || ''
-  const isIdValid = isUUIDv4(userId)
+  const isIdValid = validateUUID(userId)
   if (!isIdValid) {
     res.writeHead(400, { 'Content-Type': 'application/json' })
     res.end(JSON.stringify({ message: ERROR_MESSAGE.INVALID_USER_ID }))
