@@ -1,13 +1,8 @@
-import http from 'node:http';
-import { getApiRoutes } from './routes';
+import { startServer } from './server'
+import { startCluster } from './cluster'
 
-export const server = http.createServer()
+const isClusterMode = process.env.CLUSTER_MODE === 'true';
+const PORT = Number(process.env.PORT) || 4000
+const startApp = isClusterMode ? startCluster : startServer
 
-server.on("request", (req: http.IncomingMessage, res: http.ServerResponse) => {
-  const routes = getApiRoutes(req.url)
-  routes(req, res)
-})
-
-server.listen(process.env.PORT, () => {
-  console.log(`listening... on port ${process.env.PORT}`);
-});
+startApp()
