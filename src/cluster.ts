@@ -43,7 +43,7 @@ export const startCluster = () => {
       }
     })
 
-    server.listen(4000, () => {
+    server.listen(process.env.PORT, () => {
       console.log(`Load balancer listening on port ${process.env.PORT}`);
     });
   } else {
