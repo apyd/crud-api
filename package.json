@@ -10,6 +10,7 @@
     "build": "webpack --env environment=prod",
     "start:dev": "nodemon --exec ts-node-dev --env-file=.env src/index.ts",
     "start:prod": "webpack --env environment=prod && node --env-file=.env dist/index.js",
+    "start:multi": "CLUSTER_MODE=true nodemon --exec ts-node-dev --env-file=.env src/index.ts",
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "eslint --ext .ts src"
@@ -42,6 +43,7 @@
     "@typescript-eslint/parser": "^7.0.2",
     "clean-webpack-plugin": "^4.0.0",
     "eslint": "^8.56.0",
+    "eslint-plugin-prettier": "^5.1.3",
     "jest": "^29.7.0",
     "nodemon": "^3.0.3",
     "prettier": "^3.2.5",
