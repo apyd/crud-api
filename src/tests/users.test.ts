@@ -1,9 +1,9 @@
 import request from 'supertest';
-import { server } from '../index';
+import { startServer } from '../server';
 import { ROUTES } from '../constants';
-import { type UserData } from '../models/users.model';
-import { users } from '../models/users.model';
+import { type UserData, users } from '../models/users.model';
 
+const server = startServer();
 describe('Users API', () => {
   let userData: UserData;
   let invalidId : string
